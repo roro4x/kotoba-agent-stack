@@ -10,7 +10,7 @@ from pathlib import Path
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("codex-user", "lmstudio-user", "custom"), default="codex-user")
+    parser.add_argument("--target", choices=("codex-user", "custom"), default="codex-user")
     parser.add_argument("--path", type=Path, help="Required with --target custom")
     parser.add_argument("--replace", action="store_true")
     args = parser.parse_args()
@@ -19,8 +19,6 @@ def main() -> int:
     source = root / "skills"
     if args.target == "codex-user":
         target = Path.home() / ".agents" / "skills"
-    elif args.target == "lmstudio-user":
-        target = Path.home() / ".lmstudio" / "skills"
     else:
         if args.path is None:
             parser.error("--path is required with --target custom")

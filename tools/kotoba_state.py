@@ -80,6 +80,21 @@ def validate_item_id(item_id: str) -> str:
     return item_id
 
 
+def parse_result(value: str) -> tuple[str, float, str]:
+    try:
+        item_id, score_text, mode = value.split(":", 2)
+        score = float(score_text)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("result must be ITEM_ID:SCORE:MODE") from error
+    if not ITEM_ID.fullmatch(item_id):
+        raise argparse.ArgumentTypeError(f"invalid item id: {item_id}")
+    if score not in (0, 0.25, 0.5, 0.75, 1):
+        raise argparse.ArgumentTypeError("score must be 0, 0.25, 0.5, 0.75, or 1")
+    if mode not in MODES:
+        raise argparse.ArgumentTypeError(f"invalid mode: {mode}")
+    return item_id, score, mode
+
+
 def command_init(args: argparse.Namespace) -> None:
     root = args.root.resolve()
     profile_path, settings_path, mastery_path = paths(root)
@@ -135,14 +150,18 @@ def command_configure(args: argparse.Namespace) -> None:
 def command_mark_known(args: argparse.Namespace) -> None:
     root = args.root.resolve()
     _, _, mastery = require_profile(root)
-    timestamp = now()
     for item_id in args.item_ids:
         validate_item_id(item_id)
+    timestamp = now()
+    events = []
+    for item_id in args.item_ids:
         item = mastery.setdefault("items", {}).setdefault(item_id, {"history": [], "modes": {}})
         item["status"] = "reported_known"
         item["reported_known_at"] = timestamp
-        append_event(root, {"type": "reported_known", "at": timestamp, "item_id": item_id})
+        events.append({"type": "reported_known", "at": timestamp, "item_id": item_id})
     write_json(paths(root)[2], mastery)
+    for event in events:
+        append_event(root, event)
     print(f"Marked {len(args.item_ids)} item(s) as reported known.")
 
 
@@ -160,27 +179,51 @@ def mastery_status(item: dict[str, Any]) -> str:
     return "learning"
 
 
-def command_record(args: argparse.Namespace) -> None:
-    root = args.root.resolve()
-    validate_item_id(args.item_id)
-    _, _, mastery = require_profile(root)
-    timestamp = now()
-    entry = {"at": timestamp, "score": args.score, "mode": args.mode}
-    if args.lesson:
-        entry["lesson"] = str(args.lesson)
-    item = mastery.setdefault("items", {}).setdefault(args.item_id, {"history": [], "modes": {}})
+def record_result(
+    mastery: dict[str, Any], item_id: str, score: float, mode_name: str, lesson: Path | None, timestamp: str
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    entry = {"at": timestamp, "score": score, "mode": mode_name}
+    if lesson:
+        entry["lesson"] = str(lesson)
+    item = mastery.setdefault("items", {}).setdefault(item_id, {"history": [], "modes": {}})
     item.setdefault("history", []).append(entry)
-    mode = item.setdefault("modes", {}).setdefault(args.mode, {"attempts": 0, "scores": []})
+    mode = item.setdefault("modes", {}).setdefault(mode_name, {"attempts": 0, "scores": []})
     mode["attempts"] += 1
-    mode["scores"].append(args.score)
+    mode["scores"].append(score)
     mode["scores"] = mode["scores"][-10:]
     mode["average"] = round(sum(mode["scores"]) / len(mode["scores"]), 3)
     item["status"] = mastery_status(item)
     item["last_seen_at"] = timestamp
     item["recent_average"] = round(sum(x["score"] for x in item["history"][-3:]) / min(3, len(item["history"])), 3)
+    event = {"type": "assessment", "item_id": item_id, **entry, "status": item["status"]}
+    result = {"item_id": item_id, "status": item["status"], "recent_average": item["recent_average"]}
+    return event, result
+
+
+def command_record(args: argparse.Namespace) -> None:
+    root = args.root.resolve()
+    validate_item_id(args.item_id)
+    _, _, mastery = require_profile(root)
+    event, result = record_result(mastery, args.item_id, args.score, args.mode, args.lesson, now())
     write_json(paths(root)[2], mastery)
-    append_event(root, {"type": "assessment", "item_id": args.item_id, **entry, "status": item["status"]})
-    print(json.dumps({"item_id": args.item_id, "status": item["status"], "recent_average": item["recent_average"]}, ensure_ascii=False))
+    append_event(root, event)
+    print(json.dumps(result, ensure_ascii=False))
+
+
+def command_record_batch(args: argparse.Namespace) -> None:
+    root = args.root.resolve()
+    _, _, mastery = require_profile(root)
+    timestamp = now()
+    events = []
+    results = []
+    for item_id, score, mode_name in args.results:
+        event, result = record_result(mastery, item_id, score, mode_name, args.lesson, timestamp)
+        events.append(event)
+        results.append(result)
+    write_json(paths(root)[2], mastery)
+    for event in events:
+        append_event(root, event)
+    print(json.dumps(results, ensure_ascii=False, separators=(",", ":")))
 
 
 def summary_payload(root: Path) -> dict[str, Any]:
@@ -235,6 +278,11 @@ def parser() -> argparse.ArgumentParser:
     record.add_argument("--mode", required=True, choices=MODES)
     record.add_argument("--lesson", type=Path)
     record.set_defaults(handler=command_record)
+
+    batch = subparsers.add_parser("record-batch")
+    batch.add_argument("--result", dest="results", action="append", type=parse_result, required=True)
+    batch.add_argument("--lesson", type=Path)
+    batch.set_defaults(handler=command_record_batch)
 
     summary = subparsers.add_parser("summary")
     summary.add_argument("--json", action="store_true")

@@ -1,103 +1,127 @@
 # Kotoba Agent Stack
 
-Локальный набор Agent Skills для персонального изучения японского языка. Проект работает в Codex или в Bionic Code Project с локальной моделью из LM Studio, например Bonsai.
+Offline-first набор Agent Skills для персонального изучения японского языка в Codex и Bionic. Прогресс хранится локально в JSON/JSONL; облачный API и база данных не нужны.
 
-**Python для основного режима не нужен.** Профиль, настройки и прогресс хранятся в обычных JSON/JSONL-файлах, которые агент читает и обновляет своими файловыми инструментами. Python 3 — только опциональный способ выполнять те же операции детерминированно из терминала и автоматически обращаться к AnkiConnect.
+## Статус и версии
+
+| Компонент | Версия / статус |
+|---|---|
+| Проект | MVP, pre-1.0 |
+| Формат состояния | schema v1 |
+| Python | 3.9+ для рекомендуемого Bionic-режима |
+| Codex | Python необязателен |
+| Bionic | локальная модель, контекст 32k рекомендуется |
+
+## Возможности
+
+- персональные уроки для целей `jlpt` и `conversation`;
+- диагностика, адаптивные тесты и режимы фуриганы;
+- локальный прогресс со стабильными curriculum ID;
+- компактный snapshot/checkpoint между чатами;
+- безопасный Anki preview и синхронизация только после подтверждения;
+- опциональная voice-модель Bionic без собственного TTS-сервера.
 
 ## Стек
 
-- Agent Skills: Markdown-файлы `SKILL.md` с YAML frontmatter;
-- агентная оболочка: Codex или Bionic Code Project;
-- локальный inference: LM Studio, настроенная через графический интерфейс;
-- модель: Bonsai или любая другая локальная instruct/tool-use модель;
-- данные: JSON и JSONL в каталоге `learner/`, без базы данных;
-- учебный каталог: JSON в `curriculum/`;
-- опционально: Python 3, только стандартная библиотека, без `pip install`;
-- опционально: Anki + AnkiConnect для автоматической синхронизации;
-- TTS: планируемый отдельный адаптер, в MVP не реализован.
+- Agent Skills (`SKILL.md`);
+- Codex или Bionic Code Project;
+- Python 3.9+, только стандартная библиотека;
+- JSON/JSONL для состояния и каталога;
+- опционально Anki + AnkiConnect.
 
-Для базового режима не требуются Python, Node.js, Docker, база данных или облачный API.
+Не требуются Node.js, Docker, LM Studio, `pip install`, виртуальное окружение или облачный API.
 
-## Возможности MVP
-
-- старт после изучения хираганы и катаканы;
-- короткая входная диагностика слов и грамматики;
-- выбор цели `jlpt` или `conversation`;
-- изменяемая длительность урока и режим фуриганы;
-- отметка уже известного материала без повторного урока;
-- тесты значения, активного словаря и чтения с фуриганой или без;
-- локальный журнал прогресса;
-- безопасный предварительный просмотр и опциональная синхронизация с Anki.
-
-## Быстрый старт без Python
+## Установка
 
 ### Codex
 
-1. Открыть этот репозиторий как проект.
-2. Попросить Codex прочитать `AGENTS.md` и нужный скилл из `skills/`.
+1. Открыть репозиторий как проект.
+2. Использовать `AGENTS.md` и скиллы из `skills/`.
 3. Начать сообщением:
 
 ```text
-Прочитай AGENTS.md и skills/kotoba-settings/SKILL.md. Настрой мне курс японского языка и проведи входную диагностику. Работай в режиме без Python.
+Прочитай AGENTS.md и skills/kotoba-settings/SKILL.md. Настрой мне курс японского языка и проведи входную диагностику.
 ```
 
-Можно установить скиллы глобально без терминала: скопировать четыре каталога `skills/kotoba-*` в пользовательский каталог `.agents/skills`, затем перезапустить Codex. После этого доступны `$kotoba-settings`, `$kotoba-lesson`, `$kotoba-test` и `$kotoba-anki`.
-
-### Bionic + LM Studio
-
-1. Настроить и запустить локальный сервер в интерфейсе LM Studio по [инструкции](docs/lmstudio-bionic.md).
-2. В Bionic создать Code Project с корнем этого репозитория и выбрать модель LM Studio.
-3. Отправить тот же стартовый промпт, указав режим без Python.
-
-В этом режиме агент создаст `learner/profile.json`, `settings.json`, `mastery.json` и `events.jsonl` по правилам из [формата состояния](docs/state-format.md).
-
-## Расширенный режим с Python
-
-Выбирать его необязательно. Он полезен для воспроизводимых команд, проверки формата и автоматической интеграции с Anki. Достаточно Python 3; сторонних пакетов нет.
-
-```bash
-python3 tools/kotoba_state.py init --name "Ученик" --goal conversation --minutes 25 --furigana adaptive
-python3 tools/kotoba_state.py configure --goal jlpt --minutes 40
-python3 tools/kotoba_state.py mark-known grammar.topic-wa vocab.gakusei
-python3 tools/kotoba_state.py record vocab.gakusei --score 0.75 --mode reading-no-furigana
-python3 tools/kotoba_state.py summary
-```
-
-Опциональная установка скиллов из терминала:
+Опциональная глобальная установка скиллов:
 
 ```bash
 python3 tools/install_skills.py --target codex-user
 ```
 
-## Anki
+### Bionic
 
-Anki выключен по умолчанию. Без Python скилл `$kotoba-anki` может проверить урок и подготовить предварительный просмотр карточек, но не отправляет изменения в Anki. Добавить карточки можно вручную либо через будущий совместимый MCP-адаптер.
+1. Открыть репозиторий как Code Project и выбрать локальную instruct-модель.
+2. Вставить [prompt установки](bionic/INSTALL_PROMPT.md).
+3. Выбрать выведенный каталог `bionic/kotoba` в настройке установки скилла.
+4. При необходимости включить **Auto load voice model**.
+5. В новом чате запустить `kotoba`.
 
-Для автоматической синхронизации нужны Python 3, запущенный Anki и дополнение AnkiConnect. Сначала выполнить preview:
+Проверка окружения:
 
 ```bash
-python3 tools/kotoba_state.py configure --anki true
+python3 tools/kotoba_bionic.py setup --run-tests
+python3 tools/kotoba_bionic.py doctor
+```
+
+LM Studio для Bionic не нужен: модели скачиваются и запускаются самим приложением.
+
+## Основные команды
+
+```bash
+# Компактный контекст нового Bionic-чата
+python3 tools/kotoba_bionic.py begin
+
+# Выбранные элементы без загрузки всего каталога
+python3 tools/kotoba_bionic.py items grammar.topic-wa vocab.gakusei
+
+# Пакетная запись результатов и checkpoint
+python3 tools/kotoba_bionic.py finish \
+  --result vocab.gakusei:0.75:meaning
+
+# Сводка состояния
+python3 tools/kotoba_state.py summary
+```
+
+## Anki
+
+Preview является режимом по умолчанию:
+
+```bash
 python3 tools/kotoba_anki.py examples/lesson-001.json
 ```
 
-И только после проверки применить:
+Применение разрешено только после проверки и явного согласия пользователя:
 
 ```bash
 python3 tools/kotoba_anki.py examples/lesson-001.json --apply
 ```
 
-Инструмент не удаляет карточки и изменяет только заметки с тегом `kotoba-managed`.
+## Структура
 
-## Варианты развертывания
-
-Полная матрица для Codex, Bionic + LM Studio, Python и Anki находится в [инструкции по развертыванию](docs/deployment.md).
+```text
+bionic/kotoba/   единый Bionic-скилл
+skills/          скиллы Codex
+curriculum/      учебный каталог
+learner/         профиль и прогресс
+lessons/         завершённые уроки
+tools/           state, session, Bionic и Anki CLI
+tests/           unit-тесты
+```
 
 ## Документация
 
-- [Развертывание](docs/deployment.md)
-- [Формат состояния без Python](docs/state-format.md)
+- [Bionic: окружение и установка](docs/bionic.md)
+- [Варианты развёртывания](docs/deployment.md)
+- [Компактные чаты и checkpoint](docs/session-workflow.md)
+- [Формат состояния](docs/state-format.md)
 - [Архитектура](docs/architecture.md)
-- [LM Studio, Bionic и Bonsai](docs/lmstudio-bionic.md)
-- [Дополнительные источники](docs/content-sources.md)
+- [Источники контента](docs/content-sources.md)
 
-Проект находится на стадии MVP: базовый каталог намеренно небольшой и должен расширяться после проверки реальных уроков.
+## Тесты
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Файлы `learner/` принадлежат ученику. Anki не включается и не изменяется автоматически.
