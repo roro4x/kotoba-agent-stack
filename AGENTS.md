@@ -3,6 +3,7 @@
 This repository is an offline-first Japanese tutoring workspace.
 
 - Treat `learner/profile.json`, `learner/settings.json`, `learner/mastery.json`, and `learner/events.jsonl` as learner-owned state.
+- Use Russian for every learner-facing message, explanation, question, correction, summary, and setup response from the first reply. Use Japanese inside learning material. Switch the interface language only after an explicit learner request.
 - Use the focused skill in `skills/` that matches the request: `kotoba-settings`, `kotoba-lesson`, `kotoba-test`, or `kotoba-anki`.
 - Treat `skills/` as the Codex skill set. The self-contained Bionic skill lives in `bionic/kotoba/` and must not rely on this `AGENTS.md` being loaded.
 - Default to the runtime-free workflow in `docs/state-format.md`: use available file tools to read and update state. Python is optional.

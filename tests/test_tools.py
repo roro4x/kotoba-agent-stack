@@ -34,6 +34,13 @@ class StateToolTests(unittest.TestCase):
             mastery = json.loads((root / "learner" / "mastery.json").read_text(encoding="utf-8"))
             self.assertEqual(mastery["items"]["vocab.gakusei"]["status"], "mastered")
 
+    def test_default_interface_language_is_russian(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.run_state(root, "init", "--name", "Test", "--goal", "conversation")
+            settings = json.loads((root / "learner" / "settings.json").read_text(encoding="utf-8"))
+            self.assertEqual(settings["interface_language"], "ru")
+
     def test_failed_check_downgrades_reported_knowledge(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
