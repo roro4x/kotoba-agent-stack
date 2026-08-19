@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kotoba Test"
+  short_description: "Тесты слов, чтения и грамматики"
+  default_prompt: "Use $kotoba-test to test my current Japanese vocabulary."

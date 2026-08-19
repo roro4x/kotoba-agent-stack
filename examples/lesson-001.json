@@ -1,0 +1,29 @@
+{
+  "id": "lesson-001",
+  "number": 1,
+  "date": "2026-08-19",
+  "title": "Знакомство",
+  "goal": "conversation",
+  "items": [
+    {
+      "id": "grammar.topic-wa",
+      "type": "grammar",
+      "expression": "A は B です",
+      "reading": "A は B です",
+      "meaning": "A — это B; обозначение темы",
+      "example": "私は学生です。",
+      "example_reading": "わたしはがくせいです。",
+      "tags": ["grammar", "introduction"]
+    },
+    {
+      "id": "vocab.gakusei",
+      "type": "vocabulary",
+      "expression": "学生",
+      "reading": "がくせい",
+      "meaning": "студент",
+      "example": "私は学生です。",
+      "example_reading": "わたしはがくせいです。",
+      "tags": ["people", "introduction"]
+    }
+  ]
+}

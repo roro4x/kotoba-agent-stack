@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kotoba Settings"
+  short_description: "Настройка профиля и диагностика знаний"
+  default_prompt: "Use $kotoba-settings to create or update my Japanese learning profile."

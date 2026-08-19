@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kotoba Anki"
+  short_description: "Опциональная синхронизация с Anki"
+  default_prompt: "Use $kotoba-anki to preview Anki cards for my latest lesson."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kotoba Lesson"
+  short_description: "Персональные уроки японского языка"
+  default_prompt: "Use $kotoba-lesson to conduct my next Japanese lesson."

@@ -1,0 +1,7 @@
+learner/*.json
+learner/*.jsonl
+lessons/*.json
+exports/anki/*.json
+sources/manifest.json
+__pycache__/
+*.pyc

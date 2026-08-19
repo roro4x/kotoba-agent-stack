@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "baseline": "kana-known",
+  "tracks": {
+    "conversation": {
+      "emphasis": ["production", "listening", "role-play", "politeness"]
+    },
+    "jlpt": {
+      "emphasis": ["recognition", "reading", "grammar-contrast", "timed-practice"]
+    }
+  },
+  "units": [
+    {
+      "id": "unit.introduction",
+      "title": "Знакомство и представление",
+      "grammar": ["grammar.copula-desu", "grammar.topic-wa", "grammar.question-ka"],
+      "vocabulary": ["vocab.watashi", "vocab.hito", "vocab.gakusei", "vocab.sensei", "vocab.namae", "vocab.nihon", "vocab.hai", "vocab.iie"]
+    },
+    {
+      "id": "unit.things",
+      "title": "Предметы и принадлежность",
+      "grammar": ["grammar.demonstratives-kore-sore-are", "grammar.possession-no"],
+      "vocabulary": ["vocab.hon", "vocab.kore", "vocab.sore", "vocab.are", "vocab.nan", "vocab.nihongo", "vocab.mizu"]
+    },
+    {
+      "id": "unit.actions",
+      "title": "Повседневные действия",
+      "grammar": ["grammar.verb-masu", "grammar.object-wo", "grammar.destination-ni-e"],
+      "vocabulary": ["vocab.tabemasu", "vocab.nomimasu", "vocab.ikimasu", "vocab.mimasu", "vocab.kyou", "vocab.ashita", "vocab.gakkou"]
+    },
+    {
+      "id": "unit.places",
+      "title": "Места и действия в них",
+      "grammar": ["grammar.action-place-de", "grammar.location-ni", "grammar.exists-arimasu-imasu"],
+      "vocabulary": ["vocab.ie", "vocab.eki", "vocab.mise", "vocab.neko", "vocab.arimasu", "vocab.imasu", "vocab.daijoubu", "vocab.wakarimasu"]
+    }
+  ],
+  "items": {
+    "grammar.copula-desu": {"type": "grammar", "label": "A です", "meaning": "вежливая связка", "requires": []},
+    "grammar.topic-wa": {"type": "grammar", "label": "A は B です", "meaning": "обозначение темы", "requires": ["grammar.copula-desu"]},
+    "grammar.question-ka": {"type": "grammar", "label": "〜ですか", "meaning": "нейтрально-вежливый вопрос", "requires": ["grammar.copula-desu"]},
+    "grammar.demonstratives-kore-sore-are": {"type": "grammar", "label": "これ・それ・あれ", "meaning": "указательные местоимения", "requires": ["grammar.copula-desu"]},
+    "grammar.possession-no": {"type": "grammar", "label": "A の B", "meaning": "принадлежность и отношение", "requires": ["grammar.topic-wa"]},
+    "grammar.verb-masu": {"type": "grammar", "label": "〜ます", "meaning": "вежливая непрошедшая форма", "requires": ["grammar.topic-wa"]},
+    "grammar.object-wo": {"type": "grammar", "label": "N を V", "meaning": "прямой объект действия", "requires": ["grammar.verb-masu"]},
+    "grammar.destination-ni-e": {"type": "grammar", "label": "N に／へ 行きます", "meaning": "направление движения", "requires": ["grammar.verb-masu"]},
+    "grammar.action-place-de": {"type": "grammar", "label": "N で V", "meaning": "место совершения действия", "requires": ["grammar.verb-masu"]},
+    "grammar.location-ni": {"type": "grammar", "label": "N に", "meaning": "местонахождение", "requires": ["grammar.topic-wa"]},
+    "grammar.exists-arimasu-imasu": {"type": "grammar", "label": "あります・います", "meaning": "существование неодушевлённого и одушевлённого", "requires": ["grammar.location-ni"]},
+    "vocab.watashi": {"type": "vocabulary", "expression": "私", "reading": "わたし", "meaning": "я"},
+    "vocab.hito": {"type": "vocabulary", "expression": "人", "reading": "ひと", "meaning": "человек"},
+    "vocab.gakusei": {"type": "vocabulary", "expression": "学生", "reading": "がくせい", "meaning": "студент"},
+    "vocab.sensei": {"type": "vocabulary", "expression": "先生", "reading": "せんせい", "meaning": "учитель; наставник"},
+    "vocab.namae": {"type": "vocabulary", "expression": "名前", "reading": "なまえ", "meaning": "имя"},
+    "vocab.nihon": {"type": "vocabulary", "expression": "日本", "reading": "にほん", "meaning": "Япония"},
+    "vocab.hai": {"type": "vocabulary", "expression": "はい", "reading": "はい", "meaning": "да"},
+    "vocab.iie": {"type": "vocabulary", "expression": "いいえ", "reading": "いいえ", "meaning": "нет"},
+    "vocab.hon": {"type": "vocabulary", "expression": "本", "reading": "ほん", "meaning": "книга"},
+    "vocab.kore": {"type": "vocabulary", "expression": "これ", "reading": "これ", "meaning": "это (рядом с говорящим)"},
+    "vocab.sore": {"type": "vocabulary", "expression": "それ", "reading": "それ", "meaning": "то (рядом с собеседником)"},
+    "vocab.are": {"type": "vocabulary", "expression": "あれ", "reading": "あれ", "meaning": "вон то"},
+    "vocab.nan": {"type": "vocabulary", "expression": "何", "reading": "なん", "meaning": "что"},
+    "vocab.nihongo": {"type": "vocabulary", "expression": "日本語", "reading": "にほんご", "meaning": "японский язык"},
+    "vocab.mizu": {"type": "vocabulary", "expression": "水", "reading": "みず", "meaning": "вода"},
+    "vocab.tabemasu": {"type": "vocabulary", "expression": "食べます", "reading": "たべます", "meaning": "есть"},
+    "vocab.nomimasu": {"type": "vocabulary", "expression": "飲みます", "reading": "のみます", "meaning": "пить"},
+    "vocab.ikimasu": {"type": "vocabulary", "expression": "行きます", "reading": "いきます", "meaning": "идти; ехать"},
+    "vocab.mimasu": {"type": "vocabulary", "expression": "見ます", "reading": "みます", "meaning": "смотреть"},
+    "vocab.kyou": {"type": "vocabulary", "expression": "今日", "reading": "きょう", "meaning": "сегодня"},
+    "vocab.ashita": {"type": "vocabulary", "expression": "明日", "reading": "あした", "meaning": "завтра"},
+    "vocab.gakkou": {"type": "vocabulary", "expression": "学校", "reading": "がっこう", "meaning": "школа"},
+    "vocab.ie": {"type": "vocabulary", "expression": "家", "reading": "いえ", "meaning": "дом"},
+    "vocab.eki": {"type": "vocabulary", "expression": "駅", "reading": "えき", "meaning": "станция"},
+    "vocab.mise": {"type": "vocabulary", "expression": "店", "reading": "みせ", "meaning": "магазин; заведение"},
+    "vocab.neko": {"type": "vocabulary", "expression": "猫", "reading": "ねこ", "meaning": "кошка"},
+    "vocab.arimasu": {"type": "vocabulary", "expression": "あります", "reading": "あります", "meaning": "иметься (о неодушевлённом)"},
+    "vocab.imasu": {"type": "vocabulary", "expression": "います", "reading": "います", "meaning": "находиться (об одушевлённом)"},
+    "vocab.daijoubu": {"type": "vocabulary", "expression": "大丈夫", "reading": "だいじょうぶ", "meaning": "в порядке; всё хорошо"},
+    "vocab.wakarimasu": {"type": "vocabulary", "expression": "分かります", "reading": "わかります", "meaning": "понимать"}
+  }
+}
