@@ -9,9 +9,9 @@ description: Планирует и проводит следующий перс�
 
 ## Подготовка
 
-1. Запустить `python3 tools/kotoba_state.py summary --json`.
+1. Прочитать `learner/profile.json`, `learner/settings.json` и `learner/mastery.json`. Если выбран Python-режим, вместо этого можно запустить `python3 tools/kotoba_state.py summary --json`.
 2. Если профиль отсутствует, остановиться и предложить `$kotoba-settings`.
-3. Прочитать [lesson-policy.md](references/lesson-policy.md) и `curriculum/catalog.json`.
+3. Прочитать [lesson-policy.md](references/lesson-policy.md), `docs/state-format.md` и `curriculum/catalog.json`.
 4. Выбирать сначала элементы со статусом `learning` или низкими результатами, затем зависимости следующей новой темы.
 5. Не включать элементы `reported_known` в объяснение. Допустимо дать один короткий контрольный вопрос.
 
@@ -35,7 +35,9 @@ description: Планирует и проводит следующий перс�
 
 ## Сохранение урока
 
-Сохранить структурированную запись в `lessons/YYYY-MM-DD-NNN.json` по [lesson-schema.md](references/lesson-schema.md). Затем записать оценки элементов:
+Сохранить структурированную запись в `lessons/YYYY-MM-DD-NNN.json` по [lesson-schema.md](references/lesson-schema.md). Затем записать оценки элементов по `docs/state-format.md` файловыми инструментами агента.
+
+В опциональном Python-режиме использовать:
 
 ```bash
 python3 tools/kotoba_state.py record grammar.topic-wa --score 0.75 --mode production --lesson lessons/2026-08-19-001.json

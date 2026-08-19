@@ -9,8 +9,8 @@ description: Проводит адаптивные тесты японской �
 
 ## Подготовка теста
 
-1. Получить состояние: `python3 tools/kotoba_state.py summary --json`.
-2. Прочитать [test-modes.md](references/test-modes.md).
+1. Прочитать `learner/profile.json`, `learner/settings.json` и `learner/mastery.json`. В опциональном Python-режиме можно выполнить `python3 tools/kotoba_state.py summary --json`.
+2. Прочитать [test-modes.md](references/test-modes.md) и `docs/state-format.md`.
 3. Выбрать материал из `learning`, слабых результатов и небольшой контрольной выборки `reported_known`.
 4. Согласовать только размер теста, если пользователь его не указал. По умолчанию использовать 10 вопросов.
 5. Не показывать чтение в вопросе режима `reading-no-furigana`.
@@ -26,7 +26,9 @@ description: Проводит адаптивные тесты японской �
 
 ## Запись результата
 
-Для каждого проверенного элемента вызвать:
+Для каждого проверенного элемента обновить историю, агрегаты и журнал событий по `docs/state-format.md`.
+
+В опциональном Python-режиме вызвать:
 
 ```bash
 python3 tools/kotoba_state.py record vocab.gakusei --score 0.75 --mode reading-no-furigana
