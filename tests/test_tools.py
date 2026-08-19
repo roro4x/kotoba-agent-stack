@@ -108,6 +108,19 @@ class SessionToolTests(unittest.TestCase):
             events = (root / "learner" / "events.jsonl").read_text(encoding="utf-8").splitlines()
             self.assertEqual(json.loads(events[-1])["type"], "chat_checkpoint")
 
+    def test_uninitialized_context_requires_profile_questions_in_russian(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            start = self.run_tool("kotoba_session.py", root, "start")
+            context = json.loads(start.stdout)
+            self.assertFalse(context["initialized"])
+            self.assertEqual(context["assistant_contract"]["interface_language"], "ru")
+            self.assertEqual(context["assistant_contract"]["response_audience"], "learner")
+            self.assertFalse(context["assistant_contract"]["invent_profile_values"])
+            self.assertEqual(context["next_action"]["type"], "ask_profile_in_russian")
+            self.assertTrue(context["next_action"]["stop_after_question"])
+            self.assertTrue(context["next_action"]["do_not_start_lesson"])
+
 
 class BionicToolTests(unittest.TestCase):
     def run_bionic(self, root: Path, *arguments: str) -> subprocess.CompletedProcess[str]:

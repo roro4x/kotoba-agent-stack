@@ -30,7 +30,7 @@ Offline-first набор Agent Skills для персонального изуч
 - JSON/JSONL для состояния и каталога;
 - опционально Anki + AnkiConnect.
 
-Не требуются Node.js, Docker, LM Studio, `pip install`, виртуальное окружение или облачный API.
+Не требуются Node.js, Docker, LM Studio, `pip install`, виртуальное окружение или облачный API. Если для Bionic нет Python 3.9+, установочный prompt разрешает агенту установить его самостоятельно через доверенный системный менеджер.
 
 ## Установка
 

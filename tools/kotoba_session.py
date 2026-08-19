@@ -12,6 +12,15 @@ from pathlib import Path
 from typing import Any
 
 
+ASSISTANT_CONTRACT = {
+    "interface_language": "ru",
+    "response_audience": "learner",
+    "response_style": "direct_dialogue_not_meta_report",
+    "execute_supplied_tools_internally": True,
+    "invent_profile_values": False,
+}
+
+
 def now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -59,7 +68,19 @@ def build_context(root: Path) -> dict[str, Any]:
     learner = root / "learner"
     profile = read_json(learner / "profile.json")
     if profile is None:
-        return {"schema_version": 1, "initialized": False, "source_hash": source_hash(root)}
+        return {
+            "schema_version": 1,
+            "initialized": False,
+            "assistant_contract": ASSISTANT_CONTRACT,
+            "next_action": {
+                "type": "ask_profile_in_russian",
+                "required_fields": ["name_or_alias", "goal", "lesson_minutes", "furigana"],
+                "stop_after_question": True,
+                "do_not_start_lesson": True,
+                "do_not_invent_values": True,
+            },
+            "source_hash": source_hash(root),
+        }
 
     settings = read_json(learner / "settings.json", {})
     mastery = read_json(learner / "mastery.json", {"items": {}})
@@ -118,6 +139,7 @@ def build_context(root: Path) -> dict[str, Any]:
     return {
         "schema_version": 1,
         "initialized": True,
+        "assistant_contract": ASSISTANT_CONTRACT,
         "generated_at": now(),
         "source_hash": source_hash(root),
         "learner": {
